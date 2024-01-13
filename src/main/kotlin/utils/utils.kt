@@ -2,6 +2,7 @@ package utils
 
 import it.tdlight.client.SimpleTelegramClient
 import it.tdlight.jni.TdApi
+import it.tdlight.jni.TdApi.InputFileLocal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,15 +14,18 @@ val Scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
 fun coroutine(block: suspend CoroutineScope.() -> Unit) = Scope.launch { block() }
 
-fun SimpleTelegramClient.sendTextMessage(chatId: Long, text: String, wait: Boolean): CompletableFuture<TdApi.Message> {
+fun SimpleTelegramClient.sendPhotoMessage(chatId: Long, path: String, text: String, wait: Boolean): CompletableFuture<TdApi.Message> {
     val sendMessage = TdApi.SendMessage()
+
     sendMessage.chatId = chatId
 
-    val inputMessage = TdApi.InputMessageText()
+    val inputFile = InputFileLocal(path)
+    val inputPhoto = TdApi.InputMessagePhoto()
 
-    inputMessage.text = TdApi.FormattedText(text, emptyArray())
+    inputPhoto.photo = inputFile
+    inputPhoto.caption = TdApi.FormattedText(text, emptyArray())
 
-    sendMessage.inputMessageContent = inputMessage
+    sendMessage.inputMessageContent = inputPhoto
 
     return this.sendMessage(sendMessage, wait)
 }

@@ -1,7 +1,7 @@
 import config.AuthConfig
 import config.SessionConfig
 import handler.AuthorizationHandler
-import handler.MessageHandler
+import handler.SelfDestructingPhotoHandler
 import it.tdlight.Init
 import it.tdlight.Log
 import it.tdlight.Slf4JLogMessageHandler
@@ -33,10 +33,10 @@ object TelegramClientInitializer {
     }
 
 
-    fun addUpdateHandlers(client: SimpleTelegramClient, authorizationHandler: AuthorizationHandler, messageHandler: MessageHandler) {
+    fun addUpdateHandlers(client: SimpleTelegramClient, authorizationHandler: AuthorizationHandler, selfDestructingPhotoHandler: SelfDestructingPhotoHandler) {
         with(client) {
             addUpdateHandler(TdApi.UpdateAuthorizationState::class.java, authorizationHandler::onUpdateAuthorizationState)
-            addUpdateHandler(TdApi.UpdateNewMessage::class.java, messageHandler::onUpdateNewMessage)
+            addUpdateHandler(TdApi.UpdateNewMessage::class.java, selfDestructingPhotoHandler::onUpdateNewMessage)
         }
     }
 }

@@ -2,7 +2,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import config.AppConfig
 import handler.AuthorizationHandler
-import handler.MessageHandler
+import handler.SelfDestructingPhotoHandler
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -16,9 +16,9 @@ fun main(args: Array<String>) {
 
     val client = TelegramClientInitializer.initClient(config.auth, config.session)
     val authorizationHandler = AuthorizationHandler()
-    val messageHandler = MessageHandler(client, config.leoMatchBotId, config.matchWords)
+    val selfDestructingPhotoHandler = SelfDestructingPhotoHandler(client, config.destinationChatId)
 
-    TelegramClientInitializer.addUpdateHandlers(client, authorizationHandler, messageHandler)
+    TelegramClientInitializer.addUpdateHandlers(client, authorizationHandler, selfDestructingPhotoHandler)
 }
 
 private fun loadConfig(filePath: String): AppConfig {
