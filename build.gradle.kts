@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.21"
+    application
 }
 
 group = "me.topilov"
@@ -17,6 +18,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
     implementation(platform("it.tdlight:tdlight-java-bom:3.2.2+td.1.8.21"))
     implementation(group = "it.tdlight", name = "tdlight-java")
+    //  windows_amd64 & linux_amd64_gnu_ssl1
     implementation(group = "it.tdlight", name = "tdlight-natives", classifier = "windows_amd64")
 }
 
@@ -25,5 +27,24 @@ tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(8)
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "MainKt"
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+}
+
+application {
+    mainClass.set("MainKt")
 }
