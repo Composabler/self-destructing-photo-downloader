@@ -5,6 +5,7 @@ import it.tdlight.jni.TdApi
 import it.tdlight.jni.TdApi.DownloadFile
 import it.tdlight.jni.TdApi.MessagePhoto
 import it.tdlight.jni.TdApi.MessageVideo
+import it.tdlight.jni.TdApi.MessageVideoNote
 import kotlinx.coroutines.future.await
 import utils.*
 import java.io.File
@@ -20,11 +21,12 @@ class SelfDestructingPhotoHandler(
         val media = message.content
 
         if (sender !is TdApi.MessageSenderUser) return
-        if ((media is MessagePhoto && !media.isSecret) || (media is MessageVideo && !media.isSecret)) return
+        if ((media !is MessagePhoto || !media.isSecret) && (media !is MessageVideo || !media.isSecret) && (media !is MessageVideoNote || !media.isSecret)) return
 
         val fieldId = when (media) {
             is MessagePhoto -> media.photo.sizes.last().photo.id
             is MessageVideo -> media.video.video.id
+            is MessageVideoNote -> media.videoNote.video.id
             else -> return
         }
 
@@ -47,6 +49,7 @@ class SelfDestructingPhotoHandler(
             val response = when (media) {
                 is MessagePhoto -> client.sendPhotoMessage(destinationChatId, path, caption, true)
                 is MessageVideo -> client.sendVideoMessage(destinationChatId, path, caption, true)
+                is MessageVideoNote -> client.sendVideoNoteMessage(destinationChatId, path, caption, true)
                 else -> return@coroutine
             }.await()
 

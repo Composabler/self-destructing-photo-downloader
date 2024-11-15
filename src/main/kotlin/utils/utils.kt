@@ -35,6 +35,15 @@ fun SimpleTelegramClient.sendVideoMessage(chatId: Long, path: String, text: Stri
     return this.sendMessage(chatId, inputVideo, wait)
 }
 
+fun SimpleTelegramClient.sendVideoNoteMessage(chatId: Long, path: String, text: String, wait: Boolean): CompletableFuture<TdApi.Message> {
+    val inputFile = InputFileLocal(path)
+    val inputVideo = TdApi.InputMessageVideoNote()
+
+    inputVideo.videoNote = inputFile
+
+    return this.sendMessage(chatId, inputVideo, wait)
+}
+
 fun SimpleTelegramClient.sendMessage(chatId: Long, inputMessageContent: InputMessageContent, wait: Boolean): CompletableFuture<TdApi.Message> {
     val sendMessage = TdApi.SendMessage()
 

@@ -3,6 +3,15 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import config.AppConfig
 import handler.AuthorizationHandler
 import handler.SelfDestructingPhotoHandler
+import it.tdlight.jni.TdApi
+import it.tdlight.jni.TdApi.ChatList
+import it.tdlight.jni.TdApi.ChatListMain
+import it.tdlight.jni.TdApi.TopChatCategory
+import it.tdlight.jni.TdApi.TopChatCategoryUsers
+import kotlinx.coroutines.future.await
+import utils.coroutine
+import utils.sendPhotoMessage
+import utils.sendVideoMessage
 import java.io.File
 
 fun main(args: Array<String>) {
